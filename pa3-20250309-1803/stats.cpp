@@ -30,17 +30,45 @@ Stats::Stats(PNG& im) { // i think this is to fill the rgb specs of the photo?
 			int64_t g = p->g;
 			int64_t b = p->b;
 
+			int64_t r2 = r*r;
+			int64_t g2 = g*g;
+			int64_t b2 = b*b;
+
 			// fill red
-			
+			int64_t redAbove = (y>0)? sumRed[x][y-1] : 0;
+			int64_t redLeft = (x>0)? sumRed[x-1][y] : 0;
+			int64_t redOverlap = (x>0 && y>0)? sumRed[x-1][y-1] : 0;
+			sumRed[x][y] = r + redAbove + redLeft - redOverlap;
+
 			// fill green
+			int64_t greenAbove = (y>0)? sumGreen[x][y-1] : 0;
+			int64_t greenLeft = (y>0)? sumGreen[x-1][y] : 0;
+			int64_t greenOverlap = (x>0 && y>0)? sumGreen[x-1][y-1] : 0;
+			sumGreen[x][y] = g + greenAbove + greenLeft - greenOverlap;
 
 			// fill blue
+			int64_t blueAbove = (y>0)? sumBlue[x][y-1] : 0;
+			int64_t blueLeft = (x>0)? sumBlue[x][y-1] : 0;
+			int64_t blueOverlap = (x>0 && y>0)? sumBlue[x-1][y-1] : 0;
+			sumBlue[x][y] = b + blueAbove + blueLeft - blueOverlap;
 
-			// fill r2
+			// fill redsq 
+			int64_t redSqAbove = (y>0)? sumsqRed[x][y-1] : 0;
+			int64_t redSqLeft = (x>0)? sumsqRed[x-1][y] : 0;
+			int64_t redSqOverlap = (x>0 && y>0)? sumsqRed[x-1][y-1] : 0;
+			sumsqRed[x][y] = r2 + redSqAbove + redSqLeft - redSqOverlap;
 
-			// fill g2
+			// fill greensq
+			int64_t greenSqAbove = (y>0)? sumsqGreen[x][y-1] : 0;
+			int64_t greenSqLeft = (y>0)? sumsqGreen[x-1][y] : 0;
+			int64_t greenSqOverlap = (x>0 && y>0)? sumsqGreen[x-1][y-1] : 0;
+			sumsqGreen[x][y] = g2 + greenSqAbove + greenSqLeft - greenSqOverlap;
 
-			// fill b2
+			// fill bluesq
+			int64_t blueSqAbove = (y>0)? sumsqBlue[x][y-1] : 0;
+			int64_t blueSqLeft = (x>0)? sumsqBlue[x][y-1] : 0;
+			int64_t blueSqOverlap = (x>0 && y>0)? sumsqBlue[x-1][y-1] : 0;
+			sumsqBlue[x][y] = r2 + blueSqAbove + blueSqLeft - blueSqOverlap;
 		}
 	}
 }
