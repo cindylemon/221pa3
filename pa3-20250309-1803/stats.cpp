@@ -129,8 +129,16 @@ double Stats::GetVar(pair<int, int> ul, int w, int h) {
 
 
 RGBAPixel Stats::GetAvg(pair<int, int> ul, int w, int h) {
-	/* Replace the line below with your implementation */
+	int64_t area = (int64_t)w*(int64_t)h;
 
+	int64_t sumR = GetSum('r', ul, w, h);
+	int64_t sumG = GetSum('g', ul, w, h);
+	int64_t sumB = GetSum('b', ul, w, h);
+
+	RGBAPixel p;
+	p.r = sumR/area;
+	p.g = sumG/area;
+	p.b = sumB/area;
 
 	return RGBAPixel();
 }
