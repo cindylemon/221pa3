@@ -123,8 +123,24 @@ int64_t Stats::GetSumSq(char channel, pair<int, int> ul, int w, int h) {
  * See written specification for a description of this function.
 **/
 double Stats::GetVar(pair<int, int> ul, int w, int h) {
-	/* Replace the line below with your implementation */
-	return 0;
+
+	int64_t sumR = GetSum('r', ul, w, h);
+	int64_t sumG = GetSum('g', ul, w, h);
+	int64_t sumB = GetSum('b', ul, w, h);
+
+	int64_t sumsqR = GetSumSq('r', ul, w, h);
+	int64_t sumsqG = GetSumSq('g', ul, w, h);
+	int64_t sumsqB = GetSumSq('b', ul, w, h);
+
+	int64_t area = (int64_t)w*(int64_t)h;
+
+	double varR = sumsqR - (sumR * sumR)/area;
+	double varG = sumsqG - (sumG * sumG)/area;
+	double varB = sumsqB - (sumB * sumB)/area;
+
+	double var = varR + varG + varB;
+
+	return var;
 }
 
 
