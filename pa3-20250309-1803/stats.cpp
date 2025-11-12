@@ -140,7 +140,7 @@ RGBAPixel Stats::GetAvg(pair<int, int> ul, int w, int h) {
 	p.g = sumG/area;
 	p.b = sumB/area;
 
-	return RGBAPixel();
+	return p;
 }
 
 /****************************************************************
