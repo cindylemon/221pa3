@@ -89,6 +89,7 @@ int64_t Stats::GetSum(char channel, pair<int, int> ul, int w, int h) {
 
 	int64_t t = (*sum)[x2][y2];
 
+	// subtract left and above, then re add the overlap
 	if(x > 0) t = t-(*sum)[x-1][y2];
 	if(y > 0) t = t-(*sum)[x2][y-1];
 	if(y > 0 && x > 0) t = t + (*sum)[x-1][y-1];
