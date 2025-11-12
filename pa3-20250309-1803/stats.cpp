@@ -75,20 +75,46 @@ Stats::Stats(PNG& im) { // i think this is to fill the rgb specs of the photo?
 
 
 int64_t Stats::GetSum(char channel, pair<int, int> ul, int w, int h) {
-	int result = 0;
+	//int result = 0;
+	int x = ul.first;
+	int y = ul.second;
 
-	// for(int i = 0; i < (w-pair.first); i++) {
-	// 	for(int j = 0; j < (h-pair.second); j++) {
-			
-	// 	}
-	// }
+	int x2 = x + w - 1;
+	int y2 = y + h - 1;
 
-	return result;
+	vector<vector<int64_t>>* sum = nullptr;
+	if(channel == 'r') sum = &sumRed;
+	if(channel == 'g') sum = &sumGreen;
+	if(channel == 'b') sum = &sumBlue;
+
+	int64_t t = (*sum)[x2][y2];
+
+	if(x > 0) t = t-(*sum)[x-1][y2];
+	if(y > 0) t = t-(*sum)[x2][y-1];
+	if(y > 0 && x > 0) t = t + (*sum)[x-1][y-1];
+
+	return t;
 }
 
 int64_t Stats::GetSumSq(char channel, pair<int, int> ul, int w, int h) {
-	/* Replace the line below with your implementation */
-	return 0;
+	int x = ul.first;
+	int y = ul.second;
+
+	int x2 = x + w - 1;
+	int y2 = y + h - 1;
+
+	vector<vector<int64_t>>* sum = nullptr;
+	if(channel == 'r') sum = &sumsqRed;
+	if(channel == 'g') sum = &sumsqGreen;
+	if(channel == 'b') sum = &sumsqBlue;
+
+	int64_t t = (*sum)[x2][y2];
+
+	if(x > 0) t = t-(*sum)[x-1][y2];
+	if(y > 0) t = t-(*sum)[x2][y-1];
+	if(y > 0 && x > 0) t = t + (*sum)[x-1][y-1];
+
+	return t;
 }
 
 /**
