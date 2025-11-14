@@ -42,13 +42,13 @@ Stats::Stats(PNG& im) { // i think this is to fill the rgb specs of the photo?
 
 			// fill green
 			int64_t greenAbove = (y>0)? sumGreen[x][y-1] : 0;
-			int64_t greenLeft = (y>0)? sumGreen[x-1][y] : 0;
+			int64_t greenLeft = (x>0)? sumGreen[x-1][y] : 0;
 			int64_t greenOverlap = (x>0 && y>0)? sumGreen[x-1][y-1] : 0;
 			sumGreen[x][y] = g + greenAbove + greenLeft - greenOverlap;
 
 			// fill blue
 			int64_t blueAbove = (y>0)? sumBlue[x][y-1] : 0;
-			int64_t blueLeft = (x>0)? sumBlue[x][y-1] : 0;
+			int64_t blueLeft = (x>0)? sumBlue[x-1][y] : 0;
 			int64_t blueOverlap = (x>0 && y>0)? sumBlue[x-1][y-1] : 0;
 			sumBlue[x][y] = b + blueAbove + blueLeft - blueOverlap;
 
@@ -60,15 +60,15 @@ Stats::Stats(PNG& im) { // i think this is to fill the rgb specs of the photo?
 
 			// fill greensq
 			int64_t greenSqAbove = (y>0)? sumsqGreen[x][y-1] : 0;
-			int64_t greenSqLeft = (y>0)? sumsqGreen[x-1][y] : 0;
+			int64_t greenSqLeft = (x>0)? sumsqGreen[x-1][y] : 0;
 			int64_t greenSqOverlap = (x>0 && y>0)? sumsqGreen[x-1][y-1] : 0;
 			sumsqGreen[x][y] = g2 + greenSqAbove + greenSqLeft - greenSqOverlap;
 
 			// fill bluesq
 			int64_t blueSqAbove = (y>0)? sumsqBlue[x][y-1] : 0;
-			int64_t blueSqLeft = (x>0)? sumsqBlue[x][y-1] : 0;
+			int64_t blueSqLeft = (x>0)? sumsqBlue[x-1][y] : 0;
 			int64_t blueSqOverlap = (x>0 && y>0)? sumsqBlue[x-1][y-1] : 0;
-			sumsqBlue[x][y] = r2 + blueSqAbove + blueSqLeft - blueSqOverlap;
+			sumsqBlue[x][y] = b2 + blueSqAbove + blueSqLeft - blueSqOverlap;
 		}
 	}
 }
@@ -134,9 +134,9 @@ double Stats::GetVar(pair<int, int> ul, int w, int h) {
 
 	int64_t area = (int64_t)w*(int64_t)h;
 
-	double varR = sumsqR - (sumR * sumR)/area;
-	double varG = sumsqG - (sumG * sumG)/area;
-	double varB = sumsqB - (sumB * sumB)/area;
+	double varR = sumsqR - ((double)sumR * sumR)/area;
+	double varG = sumsqG - ((double)sumG * sumG)/area;
+	double varB = sumsqB - ((double)sumB * sumB)/area;
 
 	double var = varR + varG + varB;
 

@@ -26,7 +26,39 @@ ThreeTree::ThreeTree(PNG& imIn, double tol) {
 **/
 Node* ThreeTree::BuildTree(Stats& s, pair<int, int> ul, int w, int h, double tol) {
     /* Replace the line below with your implementation */
-    return nullptr;
+    Node* node = new Node(s, ul, w, h);
+
+    // If colour variability of a node is at most the tolerance, then we can simply not construct any children for this node
+    if (node->var <= tol) {
+        node->A = nullptr;
+        node->B = nullptr;
+        node->C = nullptr;
+        return node;
+    }
+
+    // splitting horizontally 
+    if (h >= w) {
+        int heightA = h/3;
+        int heightB = h/3;
+        int heightC = h - heightA - heightB;
+    
+        node->A = BuildTree(s, ul, w, heightA, tol);
+        node->B = BuildTree(s, make_pair(ul.first, ul.second + heightA), w, heightB, tol);
+        node->C = BuildTree(s, make_pair(ul.first, ul.second + heightA + heightB), w, heightC, tol);
+
+    } else { // split vertically
+
+        int widthA = w/3;
+        int widthB = w/3;
+        int widthC = w - widthA - widthB;
+    
+        node->A = BuildTree(s, ul, widthA, h, tol);
+        node->B = BuildTree(s, make_pair(ul.first + widthA, ul.second), widthB, h, tol);
+        node->C = BuildTree(s, make_pair(ul.first + widthA + widthB, ul.second), widthC, h, tol);
+
+    }
+
+    return node;
 }
 
 /**
