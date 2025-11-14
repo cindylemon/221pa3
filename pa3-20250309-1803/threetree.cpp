@@ -13,7 +13,6 @@
 **/
 ThreeTree::ThreeTree(PNG& imIn, double tol) {
     /* Complete your implementation below */
-    this->tol = tol;
     int width = imIn.width();
     int height = imIn.height();
 
@@ -61,7 +60,7 @@ void ThreeTree::Copy(const ThreeTree& other) {
 **/
 int ThreeTree::Size() const {
     /* Replace the line below with your implementation */
-    return 0;
+    return Size_Helper(root);
 }
 
 /**
@@ -90,3 +89,8 @@ void ThreeTree::RotateCW() {
 * ADD YOUR IMPLEMENTATIONS BELOW                                 *
 *****************************************************************/
 
+int ThreeTree::Size_Helper(Node* subroot) const {
+    if(subroot == nullptr) return 0;
+
+    return 1 + Size_Helper(subroot->A) + Size_Helper(subroot->B) + Size_Helper(subroot->C);
+}
