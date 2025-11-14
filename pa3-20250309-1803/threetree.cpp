@@ -67,7 +67,7 @@ int ThreeTree::Size() const {
 **/
 int ThreeTree::NumLeaves() const {
     /* Replace the line below with your implementation */
-    return 0;
+    return NumLeaves_Helper(root);
 }
 
 /**
