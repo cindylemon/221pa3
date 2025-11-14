@@ -41,9 +41,7 @@ PNG ThreeTree::Render() const {
  * Delete allocated memory.
 **/
 void ThreeTree::Clear() {
-    /* Complete your implementation below */
-
-    
+    Clear_Helper(root);
 }
 
 /**
@@ -99,5 +97,13 @@ int ThreeTree::NumLeaves_Helper(Node* subroot) const {
     if(!subroot->A && !subroot->B && !subroot->C) return 1;
 
     return NumLeaves_Helper(subroot->A) + NumLeaves_Helper(subroot->B) + NumLeaves_Helper(subroot->C);
-    
+}
+
+void ThreeTree::Clear_Helper(Node* subroot) {
+    if(subroot == nullptr) return;
+    Clear_Helper(subroot->A);
+    Clear_Helper(subroot->B);
+    Clear_Helper(subroot->C);
+    delete subroot;
+    subroot = nullptr;
 }
