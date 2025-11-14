@@ -59,7 +59,6 @@ void ThreeTree::Copy(const ThreeTree& other) {
  * Returns the number of nodes in the tree
 **/
 int ThreeTree::Size() const {
-    /* Replace the line below with your implementation */
     return Size_Helper(root);
 }
 
@@ -93,4 +92,12 @@ int ThreeTree::Size_Helper(Node* subroot) const {
     if(subroot == nullptr) return 0;
 
     return 1 + Size_Helper(subroot->A) + Size_Helper(subroot->B) + Size_Helper(subroot->C);
+}
+
+int ThreeTree::NumLeaves_Helper(Node* subroot) const {
+    if(subroot == nullptr) return 0;
+    if(!subroot->A && !subroot->B && !subroot->C) return 1;
+
+    return NumLeaves_Helper(subroot->A) + NumLeaves_Helper(subroot->B) + NumLeaves_Helper(subroot->C);
+    
 }

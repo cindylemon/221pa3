@@ -9,4 +9,5 @@
  * THIS FILE WILL BE SUBMITTED
 **/
 
-int Size_Helper(Node* subroot) const;
+int Size_Helper(Node* subroot) const
+int NumLeaves_Helper(Node* subroot) const;
