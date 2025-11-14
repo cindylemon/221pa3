@@ -64,7 +64,6 @@ int ThreeTree::Size() const {
  * Returns the number of leaf nodes in the tree
 **/
 int ThreeTree::NumLeaves() const {
-    /* Replace the line below with your implementation */
     return NumLeaves_Helper(root);
 }
 
