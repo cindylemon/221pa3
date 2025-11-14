@@ -26,36 +26,106 @@ ThreeTree::ThreeTree(PNG& imIn, double tol) {
 **/
 Node* ThreeTree::BuildTree(Stats& s, pair<int, int> ul, int w, int h, double tol) {
     /* Replace the line below with your implementation */
-    Node* node = new Node(s, ul, w, h);
 
+    if (w <= 0 || h <= 0) {
+        return nullptr;
+    }
+
+    Node* node = new Node(s, ul, w, h);
+ 
+    const double EPS = 1e-9;
     // If colour variability of a node is at most the tolerance, then we can simply not construct any children for this node
-    if (node->var <= tol) {
+    if (node->var <= tol + EPS|| (w == 1 && h == 1)) {
+        // cout << "Making leaf: var=" << node->var << " <= tol=" << tol << " OR single pixel" << endl;
         node->A = nullptr;
         node->B = nullptr;
         node->C = nullptr;
         return node;
     }
 
+    bool splitHorizontally = (h > w) && (h > 1);
+    
+    if (h == 1 && w > 1) {
+        splitHorizontally = false;
+    }
+
     // splitting horizontally 
-    if (h >= w) {
-        int heightA = h/3;
-        int heightB = h/3;
-        int heightC = h - heightA - heightB;
-    
-        node->A = BuildTree(s, ul, w, heightA, tol);
-        node->B = BuildTree(s, make_pair(ul.first, ul.second + heightA), w, heightB, tol);
-        node->C = BuildTree(s, make_pair(ul.first, ul.second + heightA + heightB), w, heightC, tol);
+    if (splitHorizontally) {
+        if (h >= 3) {
+            int p = h/3;
+            int remainder = h % 3;
 
+            int heightA;
+            int heightB;
+            int heightC;
+
+            if (remainder == 0) {
+                heightA = p;
+                heightB = p;
+                heightC = p;
+            } else if (remainder == 1) {
+                heightA = p;
+                heightB = p + 1;
+                heightC = p;
+            } else {
+                heightA = p + 1;
+                heightB = p;
+                heightC = p + 1;
+            }
+
+            node->A = BuildTree(s, ul, w, heightA, tol);
+            node->B = BuildTree(s, make_pair(ul.first, ul.second + heightA), w, heightB, tol);
+            node->C = BuildTree(s, make_pair(ul.first, ul.second + heightA + heightB), w, heightC, tol);
+        } else if (h == 2) {
+            int heightA = 1;
+            int heightB = 1;
+
+            node->A = BuildTree(s, ul, w, heightA, tol);
+            node->C = nullptr;
+            node->B = BuildTree(s, make_pair(ul.first, ul.second + heightA), w, heightB, tol);
+        } else {
+            node->A = nullptr;
+            node->B = nullptr;
+            node->C = nullptr;
+        }
     } else { // split vertically
+        if (w >= 3) {
+            int p = w/3;
+            int remainder = w % 3;
 
-        int widthA = w/3;
-        int widthB = w/3;
-        int widthC = w - widthA - widthB;
-    
-        node->A = BuildTree(s, ul, widthA, h, tol);
-        node->B = BuildTree(s, make_pair(ul.first + widthA, ul.second), widthB, h, tol);
-        node->C = BuildTree(s, make_pair(ul.first + widthA + widthB, ul.second), widthC, h, tol);
+            int widthA;
+            int widthB;
+            int widthC;
 
+            if (remainder == 0) {
+                widthA = p;
+                widthB = p;
+                widthC = p;
+            } else if (remainder == 1) {
+                widthA = p;
+                widthB = p + 1;
+                widthC = p;
+            } else {
+                widthA = p + 1;
+                widthB = p;
+                widthC = p + 1;
+            }
+        
+            node->A = BuildTree(s, ul, widthA, h, tol);
+            node->B = BuildTree(s, make_pair(ul.first + widthA, ul.second), widthB, h, tol);
+            node->C = BuildTree(s, make_pair(ul.first + widthA + widthB, ul.second), widthC, h, tol);
+        } else if (w == 2) {
+            int widthA = 1;
+            int widthB = 1;
+            
+            node->A = BuildTree(s, ul, widthA, h, tol);
+            node->C = nullptr;
+            node->B = BuildTree(s, make_pair(ul.first + widthA, ul.second), widthB, h, tol);
+        } else {
+            node->A = nullptr;
+            node->B = nullptr;
+            node->C = nullptr;
+        }
     }
 
     return node;

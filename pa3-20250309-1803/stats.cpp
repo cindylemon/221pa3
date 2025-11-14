@@ -139,6 +139,7 @@ double Stats::GetVar(pair<int, int> ul, int w, int h) {
 	double varB = sumsqB - ((double)sumB * sumB)/area;
 
 	double var = varR + varG + varB;
+    if (var < 0.0) var = 0.0;
 
 	return var;
 }

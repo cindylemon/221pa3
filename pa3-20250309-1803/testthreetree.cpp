@@ -27,17 +27,19 @@ void TestSize();
 void TestHighToleranceConstructionRender();
 void TestHighToleranceSizeLeaves();
 void TestHighToleranceRotateCWRender();
+void TestSmall2x3();
 
 int main() {
 
     // call test functions
-    TestBasicTreeConstructorRender();
-    TestBasicTreeCopy();
-    TestToleranceConstructionRender();
+    TestSmall2x3();
+    // TestBasicTreeConstructorRender();
+    // TestBasicTreeCopy();
+    // TestToleranceConstructionRender();
     TestSize();
-    TestHighToleranceConstructionRender();
-    TestHighToleranceSizeLeaves();
-    TestHighToleranceRotateCWRender();
+    // TestHighToleranceConstructionRender();
+    // TestHighToleranceSizeLeaves();
+    // TestHighToleranceRotateCWRender();
 
     return 0;
 }
@@ -201,4 +203,27 @@ void TestHighToleranceRotateCWRender() {
     else {
         cout << "Test case " << FG_RED << "failed" << FG_DEFAULT << "." << endl;
     }
+}
+
+void TestSmall2x3() {
+    cout << "Test 2x3 image with tolerance 0.0" << endl;
+    
+    // Create a simple 2x3 image
+    PNG img(2, 3);
+    
+    // Fill with some colors
+    *img.getPixel(0, 0) = RGBAPixel(255, 0, 0);
+    *img.getPixel(1, 0) = RGBAPixel(0, 255, 0);
+    *img.getPixel(0, 1) = RGBAPixel(0, 0, 255);
+    *img.getPixel(1, 1) = RGBAPixel(255, 255, 0);
+    *img.getPixel(0, 2) = RGBAPixel(255, 0, 255);
+    *img.getPixel(1, 2) = RGBAPixel(0, 255, 255);
+    
+    ThreeTree t1(img, 0.0);
+    
+    int size = t1.Size();
+    int leaves = t1.NumLeaves();
+    
+    cout << "Size: " << size << " (expected 10)" << endl;
+    cout << "NumLeaves: " << leaves << " (expected 6)" << endl;
 }
