@@ -13,8 +13,13 @@
 **/
 ThreeTree::ThreeTree(PNG& imIn, double tol) {
     /* Complete your implementation below */
+    this->tol = tol;
+    int width = imIn.width();
+    int height = imIn.height();
 
-    
+    Stats s = Stats(imIn);
+
+    root = BuildTree(s, make_pair(0,0), width, height, tol);
 }
 
 /**
