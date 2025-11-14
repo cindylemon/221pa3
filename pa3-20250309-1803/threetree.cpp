@@ -150,9 +150,7 @@ void ThreeTree::Clear() {
  * Copy other tree into this tree object.
 **/
 void ThreeTree::Copy(const ThreeTree& other) {
-    /* Complete your implementation below */
-
-    
+    root = Copy_Helper(other.root);
 }
 
 /**
@@ -207,4 +205,13 @@ void ThreeTree::Clear_Helper(Node* subroot) {
     Clear_Helper(subroot->C);
     delete subroot;
     subroot = nullptr;
+}
+
+Node* ThreeTree::Copy_Helper(Node* subroot) {
+    if (subroot == nullptr) return nullptr;
+    Node* newNode = new Node(subroot->upleft, subroot->width, subroot->height, subroot->avg, subroot->var);
+    newNode->A = Copy_Helper(subroot->A);
+    newNode->B = Copy_Helper(subroot->B);
+    newNode->C = Copy_Helper(subroot->C);
+    return newNode;
 }

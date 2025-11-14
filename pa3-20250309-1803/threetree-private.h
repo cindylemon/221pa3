@@ -12,3 +12,4 @@
 int Size_Helper(Node* subroot) const;
 int NumLeaves_Helper(Node* subroot) const;
 void Clear_Helper(Node* subroot);
+Node* Copy_Helper(Node* subroot);
