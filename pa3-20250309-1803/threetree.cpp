@@ -32,21 +32,40 @@ Node* ThreeTree::BuildTree(Stats& s, pair<int, int> ul, int w, int h, double tol
     }
 
     Node* node = new Node(s, ul, w, h);
- 
-    const double EPS = 1e-9;
-    // If colour variability of a node is at most the tolerance, then we can simply not construct any children for this node
-    if (node->var <= tol + EPS|| (w == 1 && h == 1)) {
-        // cout << "Making leaf: var=" << node->var << " <= tol=" << tol << " OR single pixel" << endl;
+
+    if (w == 1 && h == 1) {
         node->A = nullptr;
         node->B = nullptr;
         node->C = nullptr;
         return node;
     }
 
-    bool splitHorizontally = (h > w) && (h > 1);
+    bool canSplitHorizontally = (h >= 2);
+    bool canSplitVertically = (w >= 2);
+
+    if (!canSplitHorizontally && !canSplitVertically) {
+        node->A = nullptr;
+        node->B = nullptr;
+        node->C = nullptr;
+        return node;
+    }
+ 
+    // If colour variability of a node is at most the tolerance, then we can simply not construct any children for this node
+    if (node->var <= tol) {
+        node->A = nullptr;
+        node->B = nullptr;
+        node->C = nullptr;
+        return node;
+    }
+
+    bool splitHorizontally;
     
-    if (h == 1 && w > 1) {
+    if (h == 1) {
         splitHorizontally = false;
+    } else if (w == 1) {
+        splitHorizontally = true;
+    } else {
+        splitHorizontally = (h > w);
     }
 
     // splitting horizontally 
@@ -81,13 +100,9 @@ Node* ThreeTree::BuildTree(Stats& s, pair<int, int> ul, int w, int h, double tol
             int heightB = 1;
 
             node->A = BuildTree(s, ul, w, heightA, tol);
-            node->C = nullptr;
             node->B = BuildTree(s, make_pair(ul.first, ul.second + heightA), w, heightB, tol);
-        } else {
-            node->A = nullptr;
-            node->B = nullptr;
             node->C = nullptr;
-        }
+        } 
     } else { // split vertically
         if (w >= 3) {
             int p = w/3;
@@ -119,11 +134,7 @@ Node* ThreeTree::BuildTree(Stats& s, pair<int, int> ul, int w, int h, double tol
             int widthB = 1;
             
             node->A = BuildTree(s, ul, widthA, h, tol);
-            node->C = nullptr;
             node->B = BuildTree(s, make_pair(ul.first + widthA, ul.second), widthB, h, tol);
-        } else {
-            node->A = nullptr;
-            node->B = nullptr;
             node->C = nullptr;
         }
     }
@@ -135,8 +146,13 @@ Node* ThreeTree::BuildTree(Stats& s, pair<int, int> ul, int w, int h, double tol
  * Render ThreeTree and return the resulting image.
 **/
 PNG ThreeTree::Render() const {
-    /* Replace the line below with your implementation */
-    return PNG();
+    if (root == nullptr) {
+        return PNG();
+    }
+    PNG output;
+    output.resize(root->width, root->height);
+    Render_Helper(root, output);
+    return output;
 }
 
 /**
@@ -175,9 +191,11 @@ int ThreeTree::NumLeaves() const {
  * You may want a recursive helper function for this.
 **/
 void ThreeTree::RotateCW() {
-    /* Complete your implementation below */
+    if (root == nullptr) {
+        return;
+    }
 
-    
+    Rotate_Helper(root, root->height, root->width);
 }
 
 /*****************************************************************
@@ -214,4 +232,92 @@ Node* ThreeTree::Copy_Helper(Node* subroot) {
     newNode->B = Copy_Helper(subroot->B);
     newNode->C = Copy_Helper(subroot->C);
     return newNode;
+}
+
+void ThreeTree::Render_Helper(Node* subroot, PNG& output) const {
+    if (subroot == nullptr) {
+        return;
+    }
+    if (subroot->A == nullptr && subroot->B == nullptr && subroot->C == nullptr) {
+        int xOrigin = subroot->upleft.first;
+        int yOrigin = subroot->upleft.second;
+        int w  = subroot->width;
+        int h  = subroot->height;
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                RGBAPixel* p = output.getPixel(xOrigin + i, yOrigin + j);
+                *p = subroot->avg;
+            }
+        }
+        return;
+    }
+    Render_Helper(subroot->A, output);
+    Render_Helper(subroot->B, output);
+    Render_Helper(subroot->C, output);
+}
+
+void ThreeTree::Rotate_Helper(Node* subroot, int newW, int newH) {
+    auto isBefore = [](Node* a, Node* b) {
+        if (a->upleft.second < b->upleft.second) return true;
+        if (a->upleft.second > b->upleft.second) return false;
+        return a->upleft.first < b->upleft.first;
+    };
+
+
+    if (subroot == nullptr) {
+        return;
+    }
+
+    int prevX = subroot->upleft.first;
+    int prevY = subroot->upleft.second;
+    int prevW = subroot->width;
+    int prevH = subroot->height;
+
+    int newX = newW - (prevY + prevH);
+    int newY = prevX;
+
+    subroot->upleft = { newX, newY };
+    subroot->width  = prevH;
+    subroot->height = prevW;
+
+    Rotate_Helper(subroot->A, newW, newH);
+    Rotate_Helper(subroot->B, newW, newH);
+    Rotate_Helper(subroot->C, newW, newH);
+    
+    Node* A = subroot->A;
+    Node* B = subroot->B;
+    Node* C = subroot->C;
+
+    if (A == nullptr) { 
+        Node* t = A;
+        A = B;
+        B = t; 
+    }
+    if (A == nullptr) {
+         Node* t = A;
+         A = C;
+         C = t; 
+    }
+    if (B == nullptr) { 
+        Node* t = B;
+        B = C; 
+        C = t;
+    }
+
+    if (A && B && !isBefore(A, B)) {
+    Node* t = A; A = B; B = t;
+    }
+
+    if (B && C && !isBefore(B, C)) {
+        Node* t = B; B = C; C = t;
+    }
+
+    if (A && B && !isBefore(A, B)) {
+        Node* t = A; A = B; B = t;
+    }
+
+    subroot->A = A;
+    subroot->B = B;
+    subroot->C = C;
 }

@@ -33,13 +33,12 @@ int main() {
 
     // call test functions
     TestSmall2x3();
-    // TestBasicTreeConstructorRender();
-    // TestBasicTreeCopy();
-    // TestToleranceConstructionRender();
-    TestSize();
-    // TestHighToleranceConstructionRender();
-    // TestHighToleranceSizeLeaves();
-    // TestHighToleranceRotateCWRender();
+    TestBasicTreeConstructorRender();
+    TestBasicTreeCopy();
+    TestToleranceConstructionRender();
+    TestHighToleranceConstructionRender();
+    TestHighToleranceSizeLeaves();
+    TestHighToleranceRotateCWRender();
 
     return 0;
 }

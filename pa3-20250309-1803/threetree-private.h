@@ -13,3 +13,5 @@ int Size_Helper(Node* subroot) const;
 int NumLeaves_Helper(Node* subroot) const;
 void Clear_Helper(Node* subroot);
 Node* Copy_Helper(Node* subroot);
+void Render_Helper(Node* subroot, PNG& output) const;
+void Rotate_Helper(Node* subroot, int newW, int newH);
